@@ -9,16 +9,35 @@ if 'page' not in st.session_state:
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 
-home = False
-count = 0
+if "count" not in st.session_state:
+    st.session_state.count = 0
+if "a" not in st.session_state:
+    st.session_state.a = 0
+if "b" not in st.session_state:
+    st.session_state.b = 0
+if "c" not in st.session_state:
+    st.session_state.c = 0
+
+# Function to calculate Prakriti
+def logic(user, x, y, z):
+    if user in brain.ans_1:
+        x += 1
+    elif user in brain.ans_2:
+        y += 2
+    else:
+        z += 3
+    return x, y, z
+
+# Function to display the result
+def result(a, b, c):
+    if a > b and a > c:
+        return "Congratulations, your Prakriti is **VATA**."
+    elif b > c and b > a:
+        return "Congratulations, your Prakriti is **PITTA**."
+    else:
+        return "Congratulations, your Prakriti is **KAPHA**."
 
 def ayurbot():
-    global count
-    questions = False
-    a = 0
-    b = 0
-    c = 0
-
     # Set dark background for the chat interface
     page_bg_dark = """
     <style>
@@ -47,6 +66,10 @@ def ayurbot():
     if st.button("Home"):
         st.session_state.page = 'home'
         st.session_state.messages = []  # Clear chat history
+        st.session_state.count = 0  # Reset question count
+        st.session_state.a = 0  # Reset VATA score
+        st.session_state.b = 0  # Reset PITTA score
+        st.session_state.c = 0  # Reset KAPHA score
         st.experimental_rerun()  # Rerun the app to go back to the home page
 
     # Display chat messages
@@ -56,8 +79,8 @@ def ayurbot():
 
     # Chat input
     if prompt := st.chat_input("Send a message"):
-        st.session_state.messages.append({"role": "USER", "content": prompt})
-        with st.chat_message("USER"):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
             st.markdown(prompt)
 
         with st.chat_message("assistant"):
@@ -65,37 +88,32 @@ def ayurbot():
             bot_response = ""
             prompt = prompt.lower()
 
-            if count == 0:
+            # Logic for bot responses
+            if st.session_state.count == 0:
                 bot_response = random.choice(brain.questions)
-            if count == 1:
+            elif st.session_state.count == 1:
                 bot_response = brain.questions[1]
-            if prompt in brain.c_hi:
+            elif prompt in brain.c_hi:
                 bot_response = "Please answer the following questions honestly and accurately."
-            if prompt in brain.c_yes:
-                questions = True
-            count += 1
+            elif prompt in brain.c_yes:
+                bot_response = "Great! Let's continue."
+            
+            # Update Prakriti scores
+            st.session_state.a, st.session_state.b, st.session_state.c = logic(
+                prompt, st.session_state.a, st.session_state.b, st.session_state.c
+            )
+            st.session_state.count += 1
 
-            logic(prompt, a, b, c)
-
+            # Display bot response
             message_placeholder.markdown(bot_response)
+        
+        # Add bot response to session state
         st.session_state.messages.append({"role": "assistant", "content": bot_response})
 
-def result(a, b, c):
-    if a > b and a > c:
-        bot_response = "Congratulations your prakriti is VATA"
-    if b > c and b > a:
-        bot_response = "Congratulations your prakriti is PITTA"
-    if c > a and c > b:
-        bot_response = "Congratulations your prakriti is KAPHA"
-
-def logic(user, x, y, z):
-    if user in brain.ans_1:
-        x += 1
-    elif user in brain.ans_2:
-        y += 2
-    else:
-        z += 3
-    return user, x, y, z
+    # Display the result if all questions are answered
+    if st.session_state.count >= len(brain.questions):
+        with st.chat_message("assistant"):
+            st.markdown(result(st.session_state.a, st.session_state.b, st.session_state.c))
 
 def main():
     # Set background image for the home page
