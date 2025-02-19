@@ -53,7 +53,7 @@ def show_home():
         unsafe_allow_html=True
     )
 
-@st.experimental_singleton
+@st.cache_resource
 def start_chat():
     st.session_state.chat_started = True
 
