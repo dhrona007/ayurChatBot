@@ -2,18 +2,9 @@ import streamlit as st
 import brain
 import random
 
-# Initialize session state for chat messages
+# Initialize session state for chat messages and Prakriti calculation
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
-# Show title and description.
-st.title("💬 AYURBOT")
-st.write(
-    "This is a simple chatbot that helps determine your Prakriti based on Ayurveda. "
-    "Answer the questions honestly to discover your dosha (VATA, PITTA, or KAPHA)."
-)
-
-# Initialize variables for Prakriti calculation
 if "count" not in st.session_state:
     st.session_state.count = 0
 if "a" not in st.session_state:
@@ -42,50 +33,118 @@ def result(a, b, c):
     else:
         return "Congratulations, your Prakriti is **KAPHA**."
 
-# Display the existing chat messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+# Function for the AYURBOT page
+def ayurbot():
+    st.markdown(
+        """
+        <h2 style="text-align: center; color: #D3D3D3; font-family: 'Times New Roman';">AYURBOT</h1>
+        """,
+        unsafe_allow_html=True
+    )
+    st.subheader('', divider='rainbow')
+    st.markdown(
+        """
+        <h5 style="color: #D3D3D3,font-weight: normal;">Hi there! I am Chatbot specific to determine the Prakriti of an individual. So now lets determine your Prakriti!</h5>
+        """,
+        unsafe_allow_html=True
+    )
 
-# Chat input field
-if prompt := st.chat_input("Send a message"):
-    # Add user message to session state
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    # Display existing chat messages
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-    # Generate bot response
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        bot_response = ""
-        prompt = prompt.lower()
+    # Chat input field
+    if prompt := st.chat_input("Send a message"):
+        # Add user message to session state
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
 
-        # Logic for bot responses
-        if st.session_state.count == 0:
-            bot_response = random.choice(brain.questions)
-        elif st.session_state.count == 1:
-            bot_response = brain.questions[1]
-        elif prompt in brain.c_hi:
-            bot_response = "Please answer the following questions honestly and accurately."
-        elif prompt in brain.c_yes:
-            bot_response = "Great! Let's continue."
-        
-        # Update Prakriti scores
-        st.session_state.a, st.session_state.b, st.session_state.c = logic(
-            prompt, st.session_state.a, st.session_state.b, st.session_state.c
-        )
-        st.session_state.count += 1
+        # Generate bot response
+        with st.chat_message("assistant"):
+            message_placeholder = st.empty()
+            bot_response = ""
+            prompt = prompt.lower()
 
-        # Display bot response
-        message_placeholder.markdown(bot_response)
-    
-    # Add bot response to session state
-    st.session_state.messages.append({"role": "assistant", "content": bot_response})
+            # Logic for bot responses
+            if st.session_state.count == 0:
+                bot_response = random.choice(brain.questions)
+            elif st.session_state.count == 1:
+                bot_response = brain.questions[1]
+            elif prompt in brain.c_hi:
+                bot_response = "Please answer the following questions honestly and accurately."
+            elif prompt in brain.c_yes:
+                bot_response = "Great! Let's continue."
 
-# Display the result if all questions are answered
-if st.session_state.count >= len(brain.questions):
-    with st.chat_message("assistant"):
-        st.markdown(result(st.session_state.a, st.session_state.b, st.session_state.c))
+            # Update Prakriti scores
+            st.session_state.a, st.session_state.b, st.session_state.c = logic(
+                prompt, st.session_state.a, st.session_state.b, st.session_state.c
+            )
+            st.session_state.count += 1
+
+            # Display bot response
+            message_placeholder.markdown(bot_response)
+
+        # Add bot response to session state
+        st.session_state.messages.append({"role": "assistant", "content": bot_response})
+
+    # Display the result if all questions are answered
+    if st.session_state.count >= len(brain.questions):
+        with st.chat_message("assistant"):
+            st.markdown(result(st.session_state.a, st.session_state.b, st.session_state.c))
+
+# Function for the HOME page
+def main():
+    page_bg = """
+    <style>
+    [data-testid="stAppViewContainer"] {
+    background-image: url(https://images.pexels.com/photos/66997/pexels-photo-66997.jpeg?cs=srgb&dl=pexels-no-name-66997.jpg&fm=jpg);
+    height = 50%;
+    background-position: center;
+    background-size: cover;
+    }
+    </style>
+    """
+    st.markdown(
+        page_bg,
+        unsafe_allow_html=True
+    )
+    st.markdown(
+        """
+        <h2 style="text-align: center; color: black; font-family: 'Times New Roman', sans-serif;">PRAKRITI</h1>
+        """,
+        unsafe_allow_html=True
+    )
+    st.subheader('', divider='rainbow')
+    st.markdown(
+        """
+        <h5 style="color: black;">It is a term used in traditional Indian philosophy, particularly in Ayurveda, to describe the inherent constitution or nature of an individual.</h5>
+        <h5 style="color: black;">In Ayurveda, it is believed that every person has a unique combination of three fundamental energies or doshas known as VATA, PITTA and KAPHA, which make up their Prakriti.</h5>
+        <h5 style="color: black;">These doshas represent different combinationof five elements (Earth, Water, Fire, Air and Ether) and play physical and physcological characteristics as well as their susceptibility to certain health issues.</h5>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Navigation buttons
+col1, col2, col3 = st.columns([1, 1, 5])
+with col1:
+    if st.button("HOME"):
+        st.session_state.page = 'home'
+with col2:
+    if st.button("AYURBOT"):
+        st.session_state.page = 'ayurbot'
+
+# Initialize session state for page navigation
+if 'page' not in st.session_state:
+    st.session_state.page = 'home'
+
+# Display the appropriate page based on session state
+if st.session_state.page == 'home':
+    main()
+
+if st.session_state.page == 'ayurbot':
+    ayurbot()
 
 # Embed the HTML content
 html_content = """
@@ -171,7 +230,6 @@ html_content = """
             <a class="navbar-brand text-white" href="#">
                 <img src="https://res.cloudinary.com/dopay7cbn/image/upload/c_crop,w_600,h_600,ar_1:1/v1739964879/Screenshot_2025-02-19_170355_dfekic.png"
                     alt="ayur chat bot logo" class="logo" />
-
             </a>
             <button class="navbarButton navbar-toggler" type="button" data-toggle="collapse"
                 data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
@@ -191,9 +249,7 @@ html_content = """
     </header>
 
     <main class="mainSection" >
-
         <div class="mainSectionContainer text-center d-flex flex-column justify-content-center">
-    
             <div class="d-flex flex-column justify-content-center">
                 <div class="d-flex flex-column justify-content-center">
                     <div>
@@ -214,7 +270,6 @@ html_content = """
         </div>
     </main>
     
-
     <footer class="fixed-bottom">
         <div class="footer m-auto">
             <p>&copy; Rights reserved by AyurBot</p>
@@ -232,4 +287,5 @@ html_content = """
 </body>
 </html>
 """
+
 st.components.v1.html(html_content, height=600)
