@@ -70,7 +70,6 @@ def ayurbot():
         st.session_state.a = 0  # Reset VATA score
         st.session_state.b = 0  # Reset PITTA score
         st.session_state.c = 0  # Reset KAPHA score
-        st.experimental_rerun()  # Rerun the app to go back to the home page
 
     # Display chat messages
     for message in st.session_state.messages:
@@ -139,7 +138,6 @@ def main():
     # Get Started button
     if st.button("Get Started"):
         st.session_state.page = 'ayurbot'
-        st.experimental_rerun()  # Rerun the app to switch to the chat interface
 
 # Page routing
 if st.session_state.page == 'home':
