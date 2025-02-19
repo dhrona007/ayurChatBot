@@ -19,16 +19,20 @@ def ayurbot():
     b = 0
     c = 0
 
-    # Set background image
-    page_bg = """
+    # Set dark background for the chat interface
+    page_bg_dark = """
     <style>
     [data-testid="stAppViewContainer"] {
-    background-image: url("https://wallpaperaccess.com/full/432582.jpg");
-    background-size: cover;
+    background-color: #1E1E1E; /* Dark background */
+    color: white; /* Light text */
+    }
+    [data-testid="stChatInput"] {
+    background-color: #2E2E2E; /* Dark input background */
+    color: white; /* Light text */
     }
     </style>
     """
-    st.markdown(page_bg, unsafe_allow_html=True)
+    st.markdown(page_bg_dark, unsafe_allow_html=True)
 
     # Display AyurBot title and description
     st.markdown(
@@ -38,6 +42,12 @@ def ayurbot():
         """,
         unsafe_allow_html=True
     )
+
+    # Add a Home button to return to the home page
+    if st.button("Home"):
+        st.session_state.page = 'home'
+        st.session_state.messages = []  # Clear chat history
+        st.experimental_rerun()  # Rerun the app to go back to the home page
 
     # Display chat messages
     for message in st.session_state.messages:
@@ -88,7 +98,7 @@ def logic(user, x, y, z):
     return user, x, y, z
 
 def main():
-    # Set background image
+    # Set background image for the home page
     page_bg = """
     <style>
     [data-testid="stAppViewContainer"] {
@@ -111,6 +121,7 @@ def main():
     # Get Started button
     if st.button("Get Started"):
         st.session_state.page = 'ayurbot'
+        st.experimental_rerun()  # Rerun the app to switch to the chat interface
 
 # Page routing
 if st.session_state.page == 'home':
