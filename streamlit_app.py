@@ -2,6 +2,13 @@ import streamlit as st
 import brain
 import random
 
+# Initialize session state variables
+if 'page' not in st.session_state:
+    st.session_state.page = 'home'
+
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
+
 home = False
 count = 0
 
@@ -12,6 +19,7 @@ def ayurbot():
     b = 0
     c = 0
 
+    # Set background image
     page_bg = """
     <style>
     [data-testid="stAppViewContainer"] {
@@ -20,30 +28,23 @@ def ayurbot():
     }
     </style>
     """
-    st.markdown(
-        page_bg,
-        unsafe_allow_html=True
-    )
+    st.markdown(page_bg, unsafe_allow_html=True)
+
+    # Display AyurBot title and description
     st.markdown(
         """
         <h2 style="text-align: center; color: white; font-family: 'Comic sans';">AyurBot</h1>
-        """,
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        """
         <h5 style="text-align: center; color: white;">Discover your Prakruthi using AI based chatbot.</h5>
         """,
         unsafe_allow_html=True
     )
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
+    # Display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
+    # Chat input
     if prompt := st.chat_input("Send a message"):
         st.session_state.messages.append({"role": "USER", "content": prompt})
         with st.chat_message("USER"):
@@ -87,6 +88,7 @@ def logic(user, x, y, z):
     return user, x, y, z
 
 def main():
+    # Set background image
     page_bg = """
     <style>
     [data-testid="stAppViewContainer"] {
@@ -95,25 +97,24 @@ def main():
     }
     </style>
     """
-    st.markdown(
-        page_bg,
-        unsafe_allow_html=True
-    )
+    st.markdown(page_bg, unsafe_allow_html=True)
+
+    # Display AyurBot title and description
     st.markdown(
         """
         <h2 style="text-align: center; color: white; font-family: 'Comic sans';">AyurBot</h1>
-        """,
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        """
         <h5 style="text-align: center; color: white;">Discover your Prakruthi using AI based chatbot.</h5>
         """,
         unsafe_allow_html=True
     )
 
+    # Get Started button
     if st.button("Get Started"):
         st.session_state.page = 'ayurbot'
 
-if 'page' not in st.session_state:
-    st.session_state.page
+# Page routing
+if st.session_state.page == 'home':
+    main()
+
+if st.session_state.page == 'ayurbot':
+    ayurbot()
