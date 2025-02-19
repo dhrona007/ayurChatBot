@@ -2,10 +2,13 @@ import streamlit as st
 import brain
 import random
 
+# Initialize session state variables
+if "chat_started" not in st.session_state:
+    st.session_state.chat_started = False
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
 def main():
-    if "chat_started" not in st.session_state:
-        st.session_state.chat_started = False
-    
     if not st.session_state.chat_started:
         show_home()
     else:
@@ -53,16 +56,9 @@ def show_home():
         unsafe_allow_html=True
     )
 
-@st.cache_resource
-def start_chat():
-    st.session_state.chat_started = True
-
 def ayurbot():
     st.title("AyurBot Chat")
     
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
