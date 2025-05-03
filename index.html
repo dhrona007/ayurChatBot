@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AyurBot - Discover Your Prakriti</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="confetti-container"></div>
-    
+
     <nav class="main-nav">
         <ul>
             <li><a href="#home" class="nav-link active" data-page="home">Home</a></li>
@@ -40,11 +43,13 @@
                 </div>
             </div>
             <div class="action-buttons">
-                <button class="btn-primary pulse begin-btn animate__animated animate__pulse animate__infinite">Begin Your Assessment 🌿</button>
-                <button class="btn-secondary pulse chat-btn animate__animated animate__pulse animate__infinite">Chat with AyurBot 💬</button>
+                <button class="btn-primary pulse begin-btn animate__animated animate__pulse animate__infinite">Begin
+                    Your Assessment 🌿</button>
+                <button class="btn-secondary pulse chat-btn animate__animated animate__pulse animate__infinite">Chat
+                    with AyurBot 💬</button>
             </div>
         </div>
-        
+
         <div class="chat-screen card glass hidden" id="chat">
             <h2>Ayurvedic Chat Assistant</h2>
             <div class="chat-container">
@@ -102,7 +107,7 @@
             <div class="result-content">
                 <h3 class="dosha-title animate__animated animate__fadeIn"></h3>
                 <p class="dosha-description animate__animated animate__fadeIn"></p>
-                
+
                 <div class="dosha-stats">
                     <div class="stat-container">
                         <div class="stat-label">Vata</div>
@@ -120,12 +125,12 @@
                         <div class="stat-value">0%</div>
                     </div>
                 </div>
-                
+
                 <div class="recommendations">
                     <h4 class="animate__animated animate__fadeIn">Personalized Recommendations</h4>
                     <div class="recommendation-cards"></div>
                 </div>
-                
+
                 <div class="result-nav">
                     <button class="btn-secondary back-btn">↩ Retake Assessment</button>
                     <button class="btn-primary download-btn">⬇ Download Results</button>
@@ -135,6 +140,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request, session, send_from_directory
 from flask_cors import CORS
 import brain
 from dotenv import load_dotenv
@@ -9,7 +9,7 @@ import os
 load_dotenv()
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.')
 CORS(app, resources={
     r"/api/*": {
         "origins": ["http://localhost:*", "http://127.0.0.1:*"],
@@ -19,7 +19,9 @@ CORS(app, resources={
 })
 app.secret_key = os.getenv('SECRET_KEY', 'default-secret-key')
 
-TOGETHER_API_KEY = '4e5ed785b761e8a31e04bcd6529761f554c27030601eb1a163bb1a0dd23487fd'
+TOGETHER_API_KEY = os.getenv('TOGETHER_API_KEY')
+if not TOGETHER_API_KEY:
+    raise ValueError("TOGETHER_API_KEY environment variable is not set.")
 TOGETHER_API_URL = "https://api.together.xyz/v1/chat/completions"
 TOGETHER_MODEL = "meta-llama/Llama-3-70b-chat-hf"
 
@@ -92,8 +94,8 @@ def chat():
             - Clear explanations of doshas (vata, pitta, kapha)
             - Personalized health recommendations
             - Lifestyle and diet advice
-            - Answers in simple, friendly language
-            - Maximum 3-4 sentences per response"""
+            - Answers in simple, friendly language, format the responses properly
+            - Maximum 1-2 sentences per response"""
         }]
         
         # Add chat history
@@ -115,7 +117,7 @@ def chat():
         payload = {
             "model": TOGETHER_MODEL,
             "messages": messages,
-            "temperature": 0.7,
+            "temperature": 0.3,
             "max_tokens": 150
         }
         
@@ -168,6 +170,15 @@ def health_check():
         'openai_ready': bool(TOGETHER_API_KEY),
         'assessment_questions': len(brain.questions)
     })
+
+# Serve frontend static files
+@app.route('/')
+def serve_index():
+    return send_from_directory('.', 'index.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('.', filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

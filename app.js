@@ -336,17 +336,33 @@ document.addEventListener('DOMContentLoaded', () => {
         fire(0.1, { spread: 120, startVelocity: 45 });
     }
 
-    function downloadResults() {
-        const resultContent = document.querySelector('.result-content');
-        const doshaTitle = document.querySelector('.dosha-title').textContent;
-        
-        html2canvas(resultContent).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `Ayurvedic_Results_${doshaTitle.replace(' ', '_')}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
-    }
+async function downloadResults() {
+    const { jsPDF } = window.jspdf;
+    const resultContent = document.querySelector('.result-content');
+    const doshaTitle = document.querySelector('.dosha-title').textContent.replace(/\s+/g, '_');
+
+    const canvas = await html2canvas(resultContent, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: 'a4'
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    // Calculate image dimensions to fit within PDF page while maintaining aspect ratio
+    const imgProps = pdf.getImageProperties(imgData);
+    const imgWidth = pdfWidth * 0.9;
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+    let position = 20; // top margin
+
+    pdf.addImage(imgData, 'PNG', (pdfWidth - imgWidth) / 2, position, imgWidth, imgHeight);
+    pdf.save(`Ayurvedic_Results_${doshaTitle}.pdf`);
+}
 
     function showValidationMessage(message) {
         const validationEl = document.querySelector('.validation-message');
@@ -419,42 +435,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function addMessage(text, sender) {
-        const messagesContainer = document.querySelector('.chat-messages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `${sender}-message`;
+function addMessage(text, sender) {
+    const messagesContainer = document.querySelector('.chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `${sender}-message`;
+    
+    if (sender === 'bot') {
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <div class="bot-icon">🌿</div>
+                <div class="message-text">${marked.parse(text)}</div>
+            </div>
+        `;
         
-        if (sender === 'bot') {
-            messageDiv.innerHTML = `
-                <div class="message-content">
-                    <div class="bot-icon">🌿</div>
-                    <div class="message-text">
-                        <p>${text}</p>
-                        ${text.includes('assessment') ? `
-                        <div class="quick-replies">
-                            <button class="quick-reply">Begin Assessment</button>
-                        </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-            
-            messageDiv.querySelectorAll('.quick-reply').forEach(btn => {
-                btn.addEventListener('click', () => startAssessment());
-            });
-        } else {
-            messageDiv.innerHTML = `
-                <div class="message-content">
-                    <div class="message-text">
-                        <p>${text}</p>
-                    </div>
-                </div>
-            `;
+        // Add quick reply button if text includes 'assessment'
+        if (text.includes('assessment')) {
+            const quickRepliesDiv = document.createElement('div');
+            quickRepliesDiv.className = 'quick-replies';
+            const button = document.createElement('button');
+            button.className = 'quick-reply';
+            button.textContent = 'Begin Assessment';
+            button.addEventListener('click', () => startAssessment());
+            quickRepliesDiv.appendChild(button);
+            messageDiv.querySelector('.message-text').appendChild(quickRepliesDiv);
         }
-        
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    } else {
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <div class="message-text">${marked.parse(text)}</div>
+            </div>
+        `;
     }
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
     function addTypingIndicator() {
         const messagesContainer = document.querySelector('.chat-messages');
