@@ -3,7 +3,7 @@
 _Discover Your Dosha • Get Personalized Wisdom • Balance Your Life Energy_
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Powered by Together AI](https://img.shields.io/badge/Powered%20by-Llama3-FF6F61)
+![Powered by Google Gemini](https://img.shields.io/badge/Powered%20by-Google%20Gemini-blue)
 
 <div align="center">
   <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXFxdThtcDE4M2pyN3dndmY2bzZ1dzF6bm9wejl0b3JpMmpjdWowMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eCSfebvRN7RMCXuWzs/giphy.gif" width="300" height="400" alt="Ayurvedic animation">
@@ -40,7 +40,7 @@ pip install -r requirements.txt
 # 3. Power up the AI 🔌
 
 ```
-echo "TOGETHER_API_KEY=your_magic_key_here" > .env
+echo "GEMINI_API_KEY=your_google_gemini_api_key" > .env
 ```
 
 # 4. Launch!
@@ -88,7 +88,7 @@ response = AI.ask("""
 
 | Layer            | Tech                         | Purpose                     |
 | ---------------- | ---------------------------- | --------------------------- |
-| **🧠 AI Brain**  | Llama-3 via Together AI      | Ayurvedic wisdom generation |
+| **🧠 AI Brain**  | Google Gemini generative AI  | Ayurvedic wisdom generation |
 | **🎨 Frontend**  | Glassmorphism CSS + Confetti | "Wow" factor                |
 | **🔗 Backend**   | Flask                        | REST API sorcery            |
 | **📦 Packaging** | Python-dotenv                | Secret keeper               |
@@ -102,7 +102,6 @@ response = AI.ask("""
 
 2. **Chat with Purpose**
    Try these icebreakers:
-
    - _"What's the Vata breakfast of champions?"_
    - _"Give me a Pitta-friendly workout plan"_
    - _"Kapha morning routine that beats snooze buttons"_
@@ -126,7 +125,7 @@ While AyurBot drinks from ancient wisdom wells, it's not a substitute for medica
 ## 🙏 Credits & Namastes
 
 - _Charaka Samhita_ for the ancient blueprint
-- Together AI for the modern magic
+- Google Gemini for the modern magic
 - You, for caring about mind-body balance in this crazy world
 
 <div align="center">
