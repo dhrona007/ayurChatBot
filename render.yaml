@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ayurChatBot
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
+    envVars:
+      - key: TOGETHER_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
